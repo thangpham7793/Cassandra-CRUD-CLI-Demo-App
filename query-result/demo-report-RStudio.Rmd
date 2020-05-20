@@ -1,0 +1,75 @@
+---
+title: "Demo-Report-RStudio"
+author: "Thang Pham"
+date: "5/21/2020"
+output:
+  pdf_document: default
+  word_document: default
+---
+
+```{r setup, include=FALSE}
+
+library(tidyverse)
+#read csv file into a table called students
+students <- read_csv('find-all-students-2020-05-20T21-47-47-982Z.csv')
+
+#delete the id column
+students$id <- NULL
+
+#convert the gende column to factor
+students$Gender <- factor(students$Gender, labels = c('M', 'F'))
+
+#prduce some summary stats
+summary <- students %>%
+  summarise(Total_Docs = sum(`Number of Owned Documents`), 
+            Total_Comments = sum(`Number of Comments`)) %>%
+  mutate(Comment_Doc_Ratio=Total_Comments/Total_Docs)
+
+summary$Total_Docs
+summary$Total_Comments
+ratio <- round(summary$Comment_Doc_Ratio, 2)
+
+summary2 <- students %>%
+  group_by(Courses) %>%
+  summarize(Total_Docs = sum(`Number of Owned Documents`), 
+                 Total_Comments = sum(`Number of Comments`)) %>%
+  mutate(ratio=Total_Comments/Total_Docs) %>%
+  arrange(ratio)
+  
+
+```
+
+# Comparison of Document Counts and Comment Counts Across 3 Courses
+
+## Data
+
+The data was extracted from a sample database of student users. In total, there are `r summary$Total_Docs` documents and `r summary$Total_Comments` comments authored by all students, with an average document:comment ratio of `r ratio`.  
+
+```{r overview, echo=FALSE}
+students %>%
+  group_by(Courses) %>%
+  summarise(Total_Docs = sum(`Number of Owned Documents`), 
+            Total_Comments = sum(`Number of Comments`)) %>%
+  gather(Total_Docs, Total_Comments, key='Total', value='value') %>%
+  arrange(Courses) %>%
+  ggplot(aes(x=Total, y=value, fill=Courses)) +
+  geom_col(position = 'dodge') +
+  xlab('') +
+  ylab('Count') +
+  ggtitle('Document Counts vs Comment Counts By Courses')
+```
+
+While it is not surprising that there are more comments than documents, effective online learning seems to generate by far the highest level of productivity, with a comment/doc ratio of `r summary2$ratio[3]`, about `r round(summary2$ratio[3]/mean(c(summary2$ratio[1], summary2$ratio[2])), 0)` times higher than the other two courses. 
+
+```{r doc/comment ratio, echo=FALSE}
+summary2 %>%
+  ggplot(aes(x=Courses, y=ratio, fill=Courses)) +
+  geom_col() +
+  ggtitle('Comment/Document Ratio Across 3 Courses')
+```
+
+## Implications
+
+The two charts and above analyses suggest that there is room to improve the interactivity of the 2 courses Ocean Browser and Studio Project 1. 
+
+Further research should be carried out to investigate what makes Effectie Online Learning so engaging.
