@@ -1,0 +1,28 @@
+{
+  "name": "cli-demo-app",
+  "version": "1.0.0",
+  "description": "CLI for CRUD operations MongoDB",
+  "main": "index.js",
+  "preferGlobal": true,
+  "bin": "./commands.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thangpham7793/cli-demo-studio-project-1.git"
+  },
+  "author": "Thang Pham",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/thangpham7793/cli-demo-studio-project-1/issues"
+  },
+  "homepage": "https://github.com/thangpham7793/cli-demo-studio-project-1#readme",
+  "dependencies": {
+    "commander": "^5.1.0",
+    "dotenv": "^8.2.0",
+    "inquirer": "^7.1.0",
+    "json-csv": "^3.0.1",
+    "mongoose": "^5.9.15"
+  }
+}
