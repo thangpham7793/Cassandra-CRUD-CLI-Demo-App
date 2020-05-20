@@ -9,7 +9,12 @@ const program = require("commander");
 const { prompt } = require("inquirer");
 
 // NOTE: import queries
-const { findByName, findAllStudents, addStudent } = require("./index");
+const {
+  findByName,
+  findAllStudents,
+  addStudent,
+  deleteAll,
+} = require("./index");
 
 // NOTE: queries questions (can add branching later and include some navigation like "return to main menu")
 
@@ -24,6 +29,11 @@ const questions = [
     type: "input",
     name: "lastName",
     message: "Enter Student Last Name: ",
+  },
+  {
+    type: "input",
+    name: "gender",
+    message: "Enter Student Gender: ",
   },
   {
     type: "input",
@@ -58,28 +68,38 @@ program
 // ANCHOR: ADD A STUDENT (not really the focus since executing queries are READ rather than CREATE operation)
 
 // NOTE: add without inquirer.js
-// program
-//   .command(
-//     "add <firstName> <lastName> <courses> <ownedDocuments> <numberOfComments>"
-//   )
-//   .alias("a")
-//   .description("add a new student to the database")
-//   .action((firstName, lastName, courses, ownedDocuments, numberOfComments) => {
-//     addStudent({
-//       firstName,
-//       lastName,
-//       courses,
-//       ownedDocuments,
-//       numberOfComments,
-//     });
-//   });
+program
+  .command(
+    "add-m <firstName> <lastName> <gender> <courses> <ownedDocuments> <numberOfComments>"
+  )
+  .alias("adm")
+  .description("manually add a student")
+  .action(
+    (
+      firstName,
+      lastName,
+      gender,
+      courses,
+      ownedDocuments,
+      numberOfComments
+    ) => {
+      addStudent({
+        firstName,
+        lastName,
+        gender,
+        courses,
+        ownedDocuments,
+        numberOfComments,
+      });
+    }
+  );
 
 // test data:
-// node commands.js add Thang Pham "Studio Project 1" 10 70
-// node commands.js add Rory Davies "Studio Project 1" 18 30
-// node commands.js add Georgie Northcoat "Studio Project 1" 25 120
-// node commands.js add Rodney Tamblyn "Ocean Browser" 6 30
-// node commands.js add Gloria Gomez "Effective Online Learning" 5 100
+// node commands.js add Thang Pham Male "Studio Project 1" 10 70
+// node commands.js add Rory Davies Male "Studio Project 1" 18 30
+// node commands.js add Georgie Northcoat Female "Studio Project 1" 25 120
+// node commands.js add Rodney Tamblyn Male "Ocean Browser" 6 30
+// node commands.js add Gloria Gomez Female "Effective Online Learning" 5 100
 
 // ANCHOR: add with inquirer.js (users supply input through answering questions)
 program
@@ -107,9 +127,16 @@ program
 // ANCHOR: FIND ALL (no argument needed, so the command simply run it, could've asked a question still)
 program
   .command("find-all")
-  .alias("f")
+  .alias("fa")
   .description("find all students")
   .action(() => findAllStudents());
+
+// ANCHOR: delete all (no argument needed, similar to DROP table)
+program
+  .command("delete-all")
+  .alias("dla")
+  .description("delete all entries")
+  .action(() => deleteAll());
 
 // ANCHOR: actually run the program/ parse(process.argv) means 'reading user input from node'
 program.parse(process.argv);

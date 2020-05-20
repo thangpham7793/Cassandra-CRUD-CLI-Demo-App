@@ -12,6 +12,10 @@ const fields = [
     label: "Last Name",
   },
   {
+    name: "gender",
+    label: "Gender",
+  },
+  {
     name: "courses",
     label: "Courses",
   },
@@ -41,6 +45,10 @@ const writeToFile = (results, operation) => {
     },
     (err, csv) => {
       if (err) throw err;
+      if (csv.length === 0) {
+        console.log("Empty search result - No file written! 😢 ");
+        return;
+      }
       fs.writeFile(
         __dirname + `/query-result/${operation}-${date}.csv`,
         csv,
@@ -83,10 +91,18 @@ const disconnect = () => mongoose.connection.close();
 // ANCHOR: add a student (create)
 
 const addStudent = (student) => {
-  Student.create(student).then((student) => {
-    console.info("New Student Added", student.toJSON());
-    disconnect();
-  });
+  Student.create(student)
+    .then((student) => {
+      console.info("New Student Added", student.toJSON());
+      disconnect();
+    })
+    .catch((error) => {
+      console.log(
+        `There was an error adding ${student.firstName} ${student.lastName} to the database! 😢\n
+        ${error.message}`
+      );
+      disconnect();
+    });
 };
 
 // ANCHOR: find all students
@@ -119,10 +135,22 @@ const findByName = (name) => {
   );
 };
 
+// ANCHOR: delete all students
+
+const deleteAll = () => {
+  Student.deleteMany({})
+    .then((result) => {
+      console.log("Successfully delete all entries!");
+      disconnect();
+    })
+    .catch((err) => console.log(err.message));
+};
+
 module.exports = {
   findByName,
   findAllStudents,
   addStudent,
+  deleteAll,
 };
 
 // NOTE: credit goes to TraversyMedia
