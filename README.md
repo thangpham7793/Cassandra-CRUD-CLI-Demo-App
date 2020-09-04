@@ -30,4 +30,4 @@ cli-demo-app fbn OR cli-demo-app find-by-name
 
 then enter the student name and you're sweet!
 
-### READ operations will automatically be saved as a csv file to a folder called query-result inside your current working directory. No file will be created if results are empty.
+## READ operations will automatically be saved as a csv file to a folder called query-result inside your current working directory. No file will be created if results are empty.
